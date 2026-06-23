@@ -9,6 +9,8 @@ let appState = {
 // DOM Elements
 const btnRefresh = document.getElementById('btn-refresh');
 const btnExportCsv = document.getElementById('btn-export-csv');
+const btnThemeToggle = document.getElementById('btn-theme-toggle');
+const themeIcon = document.getElementById('theme-icon');
 const refreshIcon = document.getElementById('refresh-icon');
 const refreshText = document.getElementById('refresh-text');
 const releaseCount = document.getElementById('release-count');
@@ -38,6 +40,16 @@ const btnTweet = document.getElementById('btn-tweet');
 // Initialization & Event Listeners
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize Theme from Local Storage
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        themeIcon.className = 'fa-solid fa-moon';
+    } else {
+        document.body.classList.remove('light-theme');
+        themeIcon.className = 'fa-solid fa-sun';
+    }
+
     fetchReleaseNotes();
     
     btnRefresh.addEventListener('click', fetchReleaseNotes);
@@ -45,6 +57,14 @@ document.addEventListener('DOMContentLoaded', () => {
     btnRetry.addEventListener('click', fetchReleaseNotes);
     btnClearSelection.addEventListener('click', clearSelection);
     
+    // Theme Toggle click event listener
+    btnThemeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+        const isLight = document.body.classList.contains('light-theme');
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        themeIcon.className = isLight ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+    });
+
     // Tweet textarea live updates
     tweetTextarea.addEventListener('input', handleTweetTextareaInput);
     

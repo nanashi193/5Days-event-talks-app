@@ -845,3 +845,106 @@ h1 {
         width: 100%;
     }
 }
+
+/* ==========================================================================
+   Light Theme Override Variables & Rules
+   ========================================================================== */
+body.light-theme {
+    --bg-dark: #f3f6fa;
+    --bg-surface: rgba(255, 255, 255, 0.75);
+    --bg-card: rgba(255, 255, 255, 0.85);
+    --bg-card-hover: rgba(255, 255, 255, 0.98);
+    --border-color: rgba(0, 0, 0, 0.08);
+    --border-color-active: rgba(29, 155, 240, 0.5);
+    
+    --primary: #0099cc;
+    --primary-glow: rgba(0, 153, 204, 0.15);
+    --secondary: #7b2cbf;
+    --accent-glow: rgba(123, 44, 191, 0.1);
+    
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    
+    --shadow-main: 0 8px 32px 0 rgba(31, 38, 135, 0.06);
+    --shadow-glow: 0 0 15px 2px rgba(0, 153, 204, 0.1);
+    
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 153, 204, 0.04) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(123, 44, 191, 0.04) 0%, transparent 40%);
+}
+
+body.light-theme h1 {
+    background: linear-gradient(to right, #1e293b, #0099cc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+body.light-theme .detail-content {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+body.light-theme .composer-area {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+body.light-theme .selected-snippet {
+    background: rgba(255, 255, 255, 0.6);
+}
+
+body.light-theme #tweet-textarea {
+    background: rgba(255, 255, 255, 0.8);
+    color: #1e293b;
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+body.light-theme #tweet-textarea:focus {
+    border-color: var(--twitter-blue);
+}
+
+/* Light Theme Twitter Card */
+body.light-theme .mock-tweet-card {
+    background-color: #ffffff;
+    border: 1px solid #eff3f4;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+body.light-theme .mock-display-name {
+    color: #0f1419;
+}
+
+body.light-theme .mock-tweet-body {
+    color: #0f1419;
+}
+
+body.light-theme .mock-tweet-footer {
+    border-top: 1px solid #eff3f4;
+}
+
+body.light-theme .mock-stats {
+    border-top: 1px solid #eff3f4;
+    color: #536471;
+}
+
+body.light-theme .mock-stats strong {
+    color: #0f1419;
+}
+
+body.light-theme .mock-time {
+    color: #536471;
+}
+
+body.light-theme .mock-username,
+body.light-theme .mock-x-logo {
+    color: #536471;
+}
+
+/* Theme Toggle Button Micro-Animation */
+.theme-toggle i {
+    font-size: 1.1rem;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-toggle:hover i {
+    transform: rotate(45deg) scale(1.1);
+}
