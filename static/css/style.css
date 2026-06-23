@@ -337,9 +337,39 @@ h1 {
     color: var(--text-primary);
 }
 
+.card-header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
 .card-time-ago {
     font-size: 0.75rem;
     color: var(--text-muted);
+}
+
+.btn-copy-card {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-copy-card:hover {
+    color: var(--primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.btn-copy-card.copied {
+    color: #4caf50;
+    text-shadow: 0 0 8px rgba(76, 175, 80, 0.4);
 }
 
 .card-preview {

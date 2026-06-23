@@ -8,6 +8,7 @@ let appState = {
 
 // DOM Elements
 const btnRefresh = document.getElementById('btn-refresh');
+const btnExportCsv = document.getElementById('btn-export-csv');
 const refreshIcon = document.getElementById('refresh-icon');
 const refreshText = document.getElementById('refresh-text');
 const releaseCount = document.getElementById('release-count');
@@ -40,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchReleaseNotes();
     
     btnRefresh.addEventListener('click', fetchReleaseNotes);
+    btnExportCsv.addEventListener('click', exportToCSV);
     btnRetry.addEventListener('click', fetchReleaseNotes);
     btnClearSelection.addEventListener('click', clearSelection);
     
@@ -144,10 +146,35 @@ function renderReleasesList() {
         card.innerHTML = `
             <div class="card-header">
                 <span class="card-date">${formattedDate}</span>
-                <span class="card-time-ago">${relativeTime}</span>
+                <div class="card-header-right">
+                    <span class="card-time-ago">${relativeTime}</span>
+                    <button class="btn-copy-card" title="Copy release notes to clipboard">
+                        <i class="fa-regular fa-copy"></i>
+                    </button>
+                </div>
             </div>
             <div class="card-preview">${textSnippet}</div>
         `;
+        
+        // Setup copy to clipboard click event
+        const copyBtn = card.querySelector('.btn-copy-card');
+        copyBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent selecting the card
+            
+            const plainText = stripHtml(release.content).trim();
+            navigator.clipboard.writeText(plainText).then(() => {
+                const icon = copyBtn.querySelector('i');
+                icon.className = 'fa-solid fa-check';
+                copyBtn.classList.add('copied');
+                
+                setTimeout(() => {
+                    icon.className = 'fa-regular fa-copy';
+                    copyBtn.classList.remove('copied');
+                }, 1500);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        });
         
         card.addEventListener('click', () => selectRelease(release, card));
         releasesList.appendChild(card);
@@ -343,4 +370,38 @@ function updateMockTime() {
     const formattedDate = date.toLocaleDateString('en-US', dateOptions);
     
     mockTweetTime.textContent = `${formattedTime} · ${formattedDate}`;
+}
+
+function exportToCSV() {
+    if (appState.releases.length === 0) {
+        alert("No release notes available to export.");
+        return;
+    }
+    
+    let csvRows = [];
+    
+    // Headers
+    csvRows.push(["Date", "Link", "Content"].map(h => `"${h.replace(/"/g, '""')}"`).join(","));
+    
+    // Data rows
+    appState.releases.forEach(release => {
+        const date = formatDateString(release.updated);
+        const link = release.link || "";
+        const content = stripHtml(release.content).trim();
+        
+        const row = [date, link, content];
+        csvRows.push(row.map(val => `"${val.replace(/"/g, '""')}"`).join(","));
+    });
+    
+    const csvString = csvRows.join("\r\n");
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `bigquery_release_notes_${new Date().toISOString().slice(0,10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
