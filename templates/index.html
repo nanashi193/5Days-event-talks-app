@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BigQuery Release Notes Tracker & Twitter Composer</title>
+    <meta name="description" content="View Google Cloud BigQuery release notes in a sleek, responsive interface. Select updates and tweet them instantly with a live preview.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <div class="icon-glow">
+                    <i class="fa-solid fa-database logo-icon"></i>
+                </div>
+                <div>
+                    <h1 id="app-title">BigQuery Release Notes</h1>
+                    <p class="subtitle" id="app-subtitle">Track and share Google Cloud BigQuery updates in real-time</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <button id="btn-refresh" class="btn btn-primary" title="Refresh release notes">
+                    <span id="refresh-text">Refresh</span>
+                    <i id="refresh-icon" class="fa-solid fa-arrows-rotate"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="app-workspace">
+            <!-- Left Side: List of Releases -->
+            <section class="releases-section" aria-labelledby="releases-title">
+                <div class="section-header">
+                    <h2 id="releases-title"><i class="fa-solid fa-list-ul"></i> Release Updates</h2>
+                    <span class="badge" id="release-count">0 Updates</span>
+                </div>
+                
+                <div id="loading-state" class="loading-state hidden">
+                    <div class="spinner"></div>
+                    <p>Fetching latest release notes from Google Cloud...</p>
+                </div>
+
+                <div id="error-state" class="error-state hidden">
+                    <i class="fa-solid fa-triangle-exclamation error-icon"></i>
+                    <h3>Failed to load release notes</h3>
+                    <p id="error-message">Unknown error occurred.</p>
+                    <button id="btn-retry" class="btn btn-secondary">Try Again</button>
+                </div>
+                
+                <div id="releases-list" class="releases-list">
+                    <!-- Release cards will be injected here -->
+                </div>
+            </section>
+
+            <!-- Right Side: Detail & Composer -->
+            <section class="detail-section" aria-labelledby="detail-title">
+                <!-- Instruction state (when nothing is selected) -->
+                <div id="detail-instruction" class="detail-instruction">
+                    <i class="fa-solid fa-arrow-pointer instruction-icon"></i>
+                    <h2>Select an Update</h2>
+                    <p>Click on any release card on the left, then select a specific bullet point or paragraph to compose a Tweet.</p>
+                </div>
+
+                <!-- Active Detail View -->
+                <div id="detail-card" class="detail-card hidden">
+                    <div class="detail-header">
+                        <div class="date-badge" id="detail-date">January 01, 2026</div>
+                        <h2 id="detail-title-text">Release Details</h2>
+                        <a href="#" id="detail-link" target="_blank" class="external-link" title="Open official GCP documentation">
+                            View Source <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="instruction-banner">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>Click on any update below to select it for Tweeting.</span>
+                    </div>
+
+                    <!-- Release content where users can select individual list items/paragraphs -->
+                    <div id="detail-content" class="detail-content html-content">
+                        <!-- Content injected here -->
+                    </div>
+
+                    <!-- Twitter Composer Section -->
+                    <div id="composer-area" class="composer-area hidden">
+                        <div class="composer-header">
+                            <h3><i class="fa-brands fa-x-twitter"></i> Tweet Composer</h3>
+                            <button id="btn-clear-selection" class="btn-clear" title="Clear selection">
+                                <i class="fa-solid fa-xmark"></i> Clear Selection
+                            </button>
+                        </div>
+
+                        <!-- Interactive selection snippet display -->
+                        <div class="selected-snippet">
+                            <span class="snippet-label">Selected Update:</span>
+                            <blockquote id="selected-text-preview">
+                                No update selected yet.
+                            </blockquote>
+                        </div>
+
+                        <!-- Tweet Preview & Editor -->
+                        <div class="tweet-editor-wrapper">
+                            <div class="tweet-editor-header">
+                                <span class="editor-label">Edit Tweet Text</span>
+                                <span id="char-counter" class="char-counter">280</span>
+                            </div>
+                            <textarea id="tweet-textarea" placeholder="What's happening? Compose your tweet..."></textarea>
+                        </div>
+
+                        <!-- Mock Twitter/X Post Preview (Premium UI) -->
+                        <div class="mock-tweet-card">
+                            <div class="mock-tweet-header">
+                                <div class="mock-profile-pic">
+                                    <i class="fa-solid fa-user-astronaut"></i>
+                                </div>
+                                <div class="mock-user-info">
+                                    <div class="mock-display-name">Cloud Dev <i class="fa-solid fa-circle-check verified-badge"></i></div>
+                                    <div class="mock-username">@cloud_developer</div>
+                                </div>
+                                <i class="fa-brands fa-x-twitter mock-x-logo"></i>
+                            </div>
+                            <div class="mock-tweet-body" id="mock-tweet-text">
+                                Mock tweet body text will appear here...
+                            </div>
+                            <div class="mock-tweet-footer">
+                                <span class="mock-time" id="mock-tweet-time">4:20 PM · Jun 23, 2026</span>
+                                <div class="mock-stats">
+                                    <span><strong>12</strong> Retweets</span>
+                                    <span><strong>84</strong> Likes</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="composer-actions">
+                            <button id="btn-tweet" class="btn btn-tweet">
+                                <i class="fa-brands fa-x-twitter"></i> Post to X / Twitter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>&copy; 2026 BigQuery Release Notes Dashboard. Built with Python Flask, Vanilla JS, and CSS.</p>
+        </footer>
+    </div>
+
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
